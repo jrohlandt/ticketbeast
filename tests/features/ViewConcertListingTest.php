@@ -8,6 +8,8 @@ use App\Concert;
 
 class ViewConcertListingTest extends TestCase
 {
+    use DatabaseMigrations;
+
     /** @test */
     function user_can_view_a_concert_listing()
     {
@@ -32,7 +34,7 @@ class ViewConcertListingTest extends TestCase
 
         // Assert
         // See the concert details
-        $this->see('The Red Cord');
+        $this->see('The Red Chord');
         $this->see('with Animosity and Lethargy');
         $this->see('January 13, 2018');
         $this->see('8:00');
