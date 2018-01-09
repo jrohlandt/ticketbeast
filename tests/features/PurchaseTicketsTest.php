@@ -2,12 +2,20 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Concert;
+use App\Billing\FakePaymentGateway;
+use App\Billing\PaymentGateway;
 
 class PurchaseTicketsTest extends TestCase {
+
+    use DatabaseMigrations;
 
     /** @test */
     function customer_can_purchase_concert_tickets()
     {
+        $paymentGateway = new FakePaymentGateway;
+        $this->app->instance(PaymentGateway::class, $paymentGateway);
+
         // Arrange
         // Create Concert
         $concert = factory(Concert::class)->create([
@@ -23,6 +31,8 @@ class PurchaseTicketsTest extends TestCase {
         ]);
 
         // Assert
+        $this->assertResponseStatus(201);
+
         // Make sure the customer was charged the correct amount.
         $this->assertEquals(9750, $paymentGateway->totalCharges());
 
