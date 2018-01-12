@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Exceptions\Handler;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
     /**
