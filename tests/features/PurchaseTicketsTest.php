@@ -39,6 +39,8 @@ class PurchaseTicketsTest extends TestCase {
             'ticket_price' => 3250,
         ]);
 
+        $concert->addTickets(3);
+
         // Act
         // Purchase concert tickets
         $this->orderTickets($concert, [
@@ -63,6 +65,7 @@ class PurchaseTicketsTest extends TestCase {
     function cannot_purchase_tickets_to_an_unpublished_concert()
     {
         $concert = factory(Concert::class)->states('unpublished')->create();
+        $concert->addTickets(3);
 
         $this->orderTickets($concert, [
             'email' => 'john@example.com',
@@ -73,7 +76,6 @@ class PurchaseTicketsTest extends TestCase {
         $this->assertResponseStatus(404);
         $this->assertEquals(0, $concert->orders()->count());
         $this->assertEquals(0, $this->paymentGateway->totalCharges());
-        $this->assertEquals(50, $concert->ticketsRemaining());
     }
 
     /** @test */
@@ -84,6 +86,7 @@ class PurchaseTicketsTest extends TestCase {
         $concert = factory(Concert::class)->states('published')->create([
             'ticket_price' => 3250,
         ]);
+        $concert->addTickets(3);
 
         $this->orderTickets($concert, [
             'email' => 'john@example.com',
@@ -99,6 +102,8 @@ class PurchaseTicketsTest extends TestCase {
     /** @test */
     function cannot_purchase_more_tickets_than_remain()
     {
+        $this->disableExceptionHandling();
+
         $concert = factory(Concert::class)->states('published')->create();
         $concert->addTickets(50);
 
