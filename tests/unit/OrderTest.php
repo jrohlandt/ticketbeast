@@ -14,8 +14,8 @@ class OrderTest extends TestCase
     public function tickets_are_released_when_an_order_is_cancelled()
     {
         // Arrange
-        // todo see what happens when you remove states() from chain
-        $concert = factory(Concert::class)->states('published')->create();
+        // todo find out why tests still pass even if concert state is not published
+        $concert = factory(Concert::class)->create();
         $concert->addTickets(10);
         $order = $concert->orderTickets('jane@example.com', 5);
         $this->assertEquals(5, $concert->ticketsRemaining());
