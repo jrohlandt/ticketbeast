@@ -92,6 +92,7 @@ class PurchaseTicketsTest extends TestCase {
         ]);
         $concert->addTickets(3);
 
+
         $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
