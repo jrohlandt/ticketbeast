@@ -33,6 +33,7 @@ class PurchaseTicketsTest extends TestCase {
     /** @test */
     function customer_can_purchase_tickets_to_a_published_concert()
     {
+        $this->disableExceptionHandling();
         // Arrange
         // Create Concert
         $concert = factory(Concert::class)->states('published')->create([
