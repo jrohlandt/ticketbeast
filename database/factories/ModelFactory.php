@@ -51,3 +51,13 @@ $factory->state(App\Concert::class, 'unpublished', function ($faker) {
         'published_at' => null,
     ];
 });
+
+$factory->define(App\Ticket::class, function (Faker\Generator $faker) {
+    return [
+        'concert_id' => function () {
+            // wrapping factory call in callback so it will created lazily
+            // it will only be created if we don't specify a concert id when the ticket is created
+            return factory(App\Concert::class)->create()->id;
+        }
+    ];
+});

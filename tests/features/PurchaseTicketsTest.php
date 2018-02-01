@@ -132,7 +132,10 @@ class PurchaseTicketsTest extends TestCase {
 
         $concert = factory(Concert::class)->states('published')->create(['ticket_price' => 1200])->addTickets(3);
 
-        $this->paymentGateway->beforeFirstCharge(function($paymentGateway) use ($concert) {
+        $this->paymentGateway->setBeforeFirstChargeCallback(function($paymentGateway) use ($concert) {
+
+            $requestA = $this->app['request'];
+
             $this->orderTickets($concert, [
                 'email' => 'personB@example.com',
                 'ticket_quantity' => 1,
@@ -143,6 +146,8 @@ class PurchaseTicketsTest extends TestCase {
             $order = $concert->orders()->where('email', 'personB@example.com')->first();
             $this->assertNull($order);
             $this->assertEquals(0, $paymentGateway->totalCharges());
+
+            $this->app['request'] = $requestA;
         });
 
         $this->orderTickets($concert, [
@@ -151,6 +156,7 @@ class PurchaseTicketsTest extends TestCase {
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
 
+//        dd($concert->orders()->first()->toArray());
         $this->assertEquals(3600, $this->paymentGateway->totalCharges());
         $order = $concert->orders()->where('email', 'personA@example.com')->first();
         $this->assertNotNull($order);
